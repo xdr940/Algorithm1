@@ -11,7 +11,7 @@ Solution::Solution( )
 
 
 void Solution::DC_rec()//分治法
-{	//问题载入
+{	//赏金任务 问题载入
 	tasks.clear();
 	this->n = 8;
 	tasks.resize(n + 1);
@@ -30,7 +30,7 @@ void Solution::DC_rec()//分治法
 	for (int i = 1; i <= n; i++) {
 		for (int j = i; j >= 0; j--) {
 			if (tasks[j].ed <= tasks[i].st) {
-				prev[i] = j;
+				prev[i] = j;//prev是路由变量，意义是：如果选了i，则prev[i]为i前一个为‘1’的解分量序号（选或不选问题）
 				break;
 			}
 		}
@@ -41,7 +41,7 @@ void Solution::DC_rec()//分治法
 
 void Solution::DP()
 {
-	//问题载入
+	//step0 问题载入
 	tasks.clear();
 	this->n = 8;
 	tasks.resize(n + 1);
@@ -54,51 +54,58 @@ void Solution::DP()
 	tasks[6] = { 5,9,3 };
 	tasks[7] = { 6,10,2 };
 	tasks[8] = { 8,11,4 };
-	//初始化prev
+	//step1.初始化解的结构，和边界情况
+	xs.clear();
+	xs.resize(n + 1);
+	xs[0] = {};
+	xs[1] = { 1 };
+	//step2.初始化prev
 	prev.clear();
 	prev.resize(n + 1);
+	prev[0]=0;
 	for (int i = 1; i <= n; i++) {
 		for (int j = i; j >= 0; j--) {
 			if (tasks[j].ed <= tasks[i].st) {
-				prev[i] = j;
+				prev[i] = j;//prev是路由变量，意义是：如果选了i，则prev[i]为i前一个为‘1’的解分量序号（选或不选问题）
 				break;
 			}
 		}
 	}
-	//opt采用非递归数组，记忆化搜索实现
-	OPT_array.clear();
-	xs.clear();
-
-	OPT_array.resize(n + 1);
-	xs.resize(n + 1);
+	//step3.定义最优值。opt采用非递归数组，记忆化搜索实现
+	//这里只是一个式子，实现在step4
+	//OPT_array[i] = max(OPT_array[i - 1], OPT_array[prev[i]] + tasks[i].cost);
 	
+	OPT_array.clear();
+	OPT_array.resize(n + 1);
 	OPT_array[0] = 0;
-	OPT_array[1] = 5;//先把头写好,边界情况
-	xs[0] = {};
-	xs[1] = { 1 };
-
+	OPT_array[1] = 5;//先把边界情况写好
+	
+	
+	//STEP4.根据prev约束，求最优值和对应的最优解
 	for (int i = 1; i <= n; i++) {
-		//这样写对记录最优值比较方便，但是最优解不好弄	
-		//OPT_array[i] = max(OPT_array[i - 1], OPT_array[prev[i]] + tasks[i].cost);
-		int temp1 = OPT_array[i - 1];
-		int temp2 = OPT_array[prev[i]] + tasks[i].cost;
-		if (temp1 > temp2) {
-			OPT_array[i] = temp1;//最优值记录
+		
+		int A = OPT_array[i - 1];
+		int B = OPT_array[prev[i]] + tasks[i].cost;
+		if (A > B) {
+			OPT_array[i] = A;//最优值记录
 			xs[i] = xs[i - 1];//最优解记录
 		}
 		else {
-			OPT_array[i] = temp2;
-			xs[i] = xs[prev[i]];//xs[i] = xs[prev[i]]+i
+			OPT_array[i] = B;
+			xs[i] = xs[prev[i]];//xs[i] = {xs[prev[i]],i}
 			xs[i].push_back(i);//最优解记录
 		}
 	
 	}
-	//输出最优解
+	//step5 输出结果
+	
+	
+	cout << "最优值输出" << endl;
 	for (int i = 1; i <= n; i++) {
 		cout << OPT_array[i] << " ";
 	}
-	cout << endl;
-	//输出最优值
+	cout << endl<<endl;
+	cout << "最优解输出" << endl;
 	for (int i = 0; i < xs.size(); i++) {
 		for (int j = 0; j < xs[i].size(); j++) {
 			cout << xs[i][j] << " ";
