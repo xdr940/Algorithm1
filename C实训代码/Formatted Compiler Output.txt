@@ -1,0 +1,4 @@
+2	0	C:\Users\jml94\Desktop\ʵѵ\file_run.h	In file included from C:\Users\jml94\Desktop\ʵѵ\file_run.h
+3		C:\Users\jml94\Desktop\ʵѵ\file_main.cpp	                 from C:\Users\jml94\Desktop\ʵѵ\file_main.cpp
+C:\Users\jml94\Desktop\ʵѵ\file_read.h	In function 'void Read(R*)':
+50	6	C:\Users\jml94\Desktop\ʵѵ\file_read.h	[Error] declaration of 'R* head' shadows a parameter
